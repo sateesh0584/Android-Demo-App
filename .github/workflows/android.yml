@@ -102,12 +102,12 @@ jobs:
         id: ip
         uses: haythem/public-ip@v1.3
 
-      - name: Debugging Info
-        run: |
-          echo "GitHub Ref: ${{ github.ref }}"
-          echo "Current Date Time: ${{ needs.build.outputs.CURRENT_DATE_TIME }}"
-          echo "JFrog URL: ${{ secrets.JF_URL }}"
-          echo "JFrog User: ${{ secrets.JF_USER }}"
+      #- name: Debugging Info
+       # run: |
+        #  echo "GitHub Ref: ${{ github.ref }}"
+         # echo "Current Date Time: ${{ needs.build.outputs.CURRENT_DATE_TIME }}"
+         # echo "JFrog URL: ${{ secrets.JF_URL }}"
+         # echo "JFrog User: ${{ secrets.JF_USER }}"
 
       - name: Add Github Actions IP to Security group
         run: |
