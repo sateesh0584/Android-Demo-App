@@ -143,10 +143,10 @@ jobs:
          jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/master/release/app-release-unsigned-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk test-Cloud/
          fi
 
-      - name: Check Uploaded Artifacts in JFrog
-        run: |
-          echo "Listing contents of test-Cloud repository:"
-          jfrog rt s test-Cloud/
+      #- name: Check Uploaded Artifacts in JFrog
+        #run: |
+         # echo "Listing contents of test-Cloud repository:"
+         # jfrog rt s test-Cloud/
       
       - name: Remove Github Actions IP from security group
         run: |
