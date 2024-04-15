@@ -66,6 +66,7 @@ jobs:
           if-no-files-found: ignore
     outputs:
         CURRENT_DATE_TIME: ${{ steps.date.outputs.current_date_time }}
+  
   notification:
     name: Notification to Teams
     runs-on: ubuntu-latest
@@ -82,10 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     if:
-      contains('
-        refs/heads/qa
-        refs/heads/master
-      ', github.ref)
+      contains(github.ref, 'refs/heads/qa') || contains(github.ref, 'refs/heads/master')
     steps:
       - name: Check out Git Repository
         uses: actions/checkout@v2
@@ -144,6 +142,7 @@ jobs:
          jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/master/debug/app-debug-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk test-Cloud/
          jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/master/release/app-release-unsigned-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk test-Cloud/
          fi
+
       - name: Check Uploaded Artifacts in JFrog
         run: |
           echo "Listing contents of test-Cloud repository:"
