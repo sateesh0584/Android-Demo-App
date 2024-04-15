@@ -146,7 +146,7 @@ jobs:
       - name: Check Uploaded Artifacts in JFrog
         run: |
           echo "Listing contents of test-Cloud repository:"
-          jfrog rt s test-Cloud
+          jfrog rt s test-Cloud/
       
       - name: Remove Github Actions IP from security group
         run: |
