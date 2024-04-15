@@ -123,7 +123,10 @@ jobs:
           version: latest
         env:
           JF_URL: ${{ secrets.JF_URL }}
+          JF_USER: ${{ secrets.JF_USER }}  # Provide username if required
+          JF_PASSWORD: ${{ secrets.JF_PASSWORD }}  # Provide password if required
           JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
+
 
       - name: Create folder for qa and master branch in apk-files
         run: |
