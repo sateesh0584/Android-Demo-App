@@ -131,11 +131,11 @@ jobs:
       - name: Upload APK files to Jfrog
         run: |
           if [[ ${{ github.ref }} == 'refs/heads/qa' ]]; then
-            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/qa/debug/app-debug-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk cloud/
-            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/qa/release/app-release-unsigned-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk cloud/
+            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} /home/ubuntu/actions-runner/_work/Android-Demo-App/Android-Demo-App/apk-files/debug/*.apk cloud/
+            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} /home/ubuntu/actions-runner/_work/Android-Demo-App/Android-Demo-App/apk-files/debug/*.apk cloud/
           elif [[ ${{ github.ref }} == 'refs/heads/master' ]]; then
-            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/master/debug/app-debug-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk cloud/
-            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/master/release/app-release-unsigned-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk cloud/
+            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} /home/ubuntu/actions-runner/_work/Android-Demo-App/Android-Demo-App/apk-files/debug/*.apk cloud/
+            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} /home/ubuntu/actions-runner/_work/Android-Demo-App/Android-Demo-App/apk-files/debug/*.apk cloud/
           fi
 
       - name: Remove Github Actions IP from security group
