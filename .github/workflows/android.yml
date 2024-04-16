@@ -107,6 +107,7 @@ jobs:
       - name: Upload APK files to Jfrog
         run: |
             jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} /home/ubuntu/actions-runner/_work/Android-Demo-App/Android-Demo-App/apk-files/debug/*.apk cloud/
+            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} /home/ubuntu/actions-runner/_work/Android-Demo-App/Android-Demo-App/apk-files/release/*.apk cloud/
       - name: Remove Github Actions IP from security group
         run: |
           aws ec2 revoke-security-group-ingress --group-id ${{ secrets.JFROG_SG_ID }} --protocol tcp --port 8082 --cidr ${{ steps.ip.outputs.ipv4 }}/32
