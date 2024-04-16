@@ -9,7 +9,7 @@ on:
       - main
 
 env:
-  AWS_DEFAULT_REGION: "ap-south-1" 
+  AWS_DEFAULT_REGION: "ap-south-1"
 
 jobs:
   build:
@@ -54,9 +54,9 @@ jobs:
         id : date
       - name: Copy APK files to a directory
         run: |
-         mkdir -p ${{ github.workspace }}/apk-files/debug ${{ github.workspace }}/apk-files/release
-         cp android-demo-app/app/build/outputs/apk/dev/debug/app-dev-debug.apk ${{ github.workspace }}/apk-files/debug/app-debug-${{ steps.date.outputs.current_date_time }}.apk
-         cp android-demo-app/app/build/outputs/apk/dev/release/app-dev-release-unsigned.apk ${{ github.workspace }}/apk-files/release/app-release-unsigned-${{ steps.date.outputs.current_date_time }}.apk
+          mkdir -p ${{ github.workspace }}/apk-files/debug ${{ github.workspace }}/apk-files/release
+          cp android-demo-app/app/build/outputs/apk/dev/debug/app-dev-debug.apk ${{ github.workspace }}/apk-files/debug/app-debug-${{ steps.date.outputs.current_date_time }}.apk
+          cp android-demo-app/app/build/outputs/apk/dev/release/app-dev-release-unsigned.apk ${{ github.workspace }}/apk-files/release/app-release-unsigned-${{ steps.date.outputs.current_date_time }}.apk
 
       - name: Upload apk-files Directory
         uses: actions/upload-artifact@v3
@@ -65,25 +65,13 @@ jobs:
           path: ${{ github.workspace }}/apk-files/
           if-no-files-found: ignore
     outputs:
-        CURRENT_DATE_TIME: ${{ steps.date.outputs.current_date_time }}
-  
-  notification:
-    name: Notification to Teams
-    runs-on: ubuntu-latest
-    steps:
-      - name: Send notification to Teams
-        uses: toko-bifrost/ms-teams-deploy-card@master
-        if: always()
-        with:
-          github-token: ${{ secrets.CI_GITHUB_TOKEN }}
-          webhook-uri: ${{ secrets.MS_TEAMS_WEBHOOK_URI }}
+      CURRENT_DATE_TIME: ${{ steps.date.outputs.current_date_time }}
 
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
     needs: build
-    if:
-      contains(github.ref, 'refs/heads/qa') || contains(github.ref, 'refs/heads/main')
+    if: contains(github.ref, 'refs/heads/qa') || contains(github.ref, 'refs/heads/main')
     steps:
       - name: Check out Git Repository
         uses: actions/checkout@v2
@@ -123,10 +111,14 @@ jobs:
           version: latest
         env:
           JF_URL: ${{ secrets.JF_URL }}
-          JF_USER: ${{ secrets.JF_USER }}  # Provide username if required
-          JF_PASSWORD: ${{ secrets.JF_PASSWORD }}  # Provide password if required
+          JF_USER: ${{ secrets.JF_USER }}
           JF_ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
 
+      - name: Configure JFrog CLI
+        run: |
+         jf config add my-server --url http://13.201.66.76:8082/artifactory/test-Cloud/ --user admin --access-token ${ACCESS_TOKEN}
+        env:
+         ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
 
       - name: Create folder for qa and master branch in apk-files
         run: |
@@ -138,19 +130,14 @@ jobs:
 
       - name: Upload APK files to Jfrog
         run: |
-         if [[ ${{ github.ref }} == 'refs/heads/qa' ]]; then
-         jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/qa/debug/app-debug-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk test-Cloud/
-         jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/qa/release/app-release-unsigned-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk test-Cloud/
-         elif [[ ${{ github.ref }} == 'refs/heads/master' ]]; then
-         jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/master/debug/app-debug-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk test-Cloud/
-         jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/master/release/app-release-unsigned-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk test-Cloud/
-         fi
+          if [[ ${{ github.ref }} == 'refs/heads/qa' ]]; then
+            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/qa/debug/app-debug-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk test-Cloud/
+            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/qa/release/app-release-unsigned-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk test-Cloud/
+          elif [[ ${{ github.ref }} == 'refs/heads/master' ]]; then
+            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/master/debug/app-debug-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk test-Cloud/
+            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/master/release/app-release-unsigned-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk test-Cloud/
+          fi
 
-      #- name: Check Uploaded Artifacts in JFrog
-        #run: |
-         # echo "Listing contents of test-Cloud repository:"
-         # jfrog rt s test-Cloud/
-      
       - name: Remove Github Actions IP from security group
         run: |
           aws ec2 revoke-security-group-ingress --group-id ${{ secrets.JFROG_SG_ID }} --protocol tcp --port 8082 --cidr ${{ steps.ip.outputs.ipv4 }}/32
@@ -161,7 +148,7 @@ jobs:
         if: always()
 
       - name: Notification to Teams
-        uses: toko-bifrost/ms-teams-deploy-card@master #  or "./" if in a local set-up
+        uses: toko-bifrost/ms-teams-deploy-card@master
         if: always()
         with:
           github-token: ${{ secrets.CI_GITHUB_TOKEN  }}
