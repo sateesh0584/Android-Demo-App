@@ -116,7 +116,7 @@ jobs:
 
       - name: Configure JFrog CLI
         run: |
-         jf config add my-server --url https://13.201.66.76:8082/artifactory/test-Cloud/ --user admin --access-token ${ACCESS_TOKEN}
+         jf config add my-server --url http://13.201.66.76:8082/artifactory/test-Cloud/ --user admin --access-token ${ACCESS_TOKEN}
         env:
          ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
 
