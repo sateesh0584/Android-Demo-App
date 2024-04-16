@@ -116,7 +116,7 @@ jobs:
 
       - name: Configure JFrog CLI
         run: |
-         jf config add my-server --url http://13.201.26.58:8082/artifactory/cz/ --user admin --access-token ${ACCESS_TOKEN}
+         jf config add my-server --url http://13.201.26.58:8082/artifactory/cloud/ --user admin --access-token ${ACCESS_TOKEN}
         env:
          ACCESS_TOKEN: ${{ secrets.JF_ACCESS_TOKEN }}
 
@@ -131,11 +131,11 @@ jobs:
       - name: Upload APK files to Jfrog
         run: |
           if [[ ${{ github.ref }} == 'refs/heads/qa' ]]; then
-            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/qa/debug/app-debug-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk cz/
-            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/qa/release/app-release-unsigned-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk cz/
+            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/qa/debug/app-debug-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk cloud/
+            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/qa/release/app-release-unsigned-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk cloud/
           elif [[ ${{ github.ref }} == 'refs/heads/master' ]]; then
-            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/master/debug/app-debug-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk cz/
-            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/master/release/app-release-unsigned-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk cz/
+            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/master/debug/app-debug-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk cloud/
+            jf rt u --url ${{ secrets.JF_URL }} --user ${{ secrets.JF_USER }} --password ${{ secrets.JF_PASSWORD }} apk-files/master/release/app-release-unsigned-${{ needs.build.outputs.CURRENT_DATE_TIME }}.apk cloud/
           fi
 
       - name: Remove Github Actions IP from security group
